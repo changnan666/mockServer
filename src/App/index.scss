@@ -1,0 +1,48 @@
+.container {
+  margin: 0 auto;
+  width: 90%;
+  min-width: 800px;
+
+  :global {
+    h1 {
+      padding-top: 50px;
+    }
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .body {
+      display: grid;
+      grid-template-columns: repeat(4, 25%);
+
+      .project-name {
+        height: 20vh;
+        text-align: center;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .container {
+          width: 90%;
+          height: 90%;
+          border: 1px solid #ddd;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          transition: all 0.1s linear;
+
+          &:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+  }
+}
