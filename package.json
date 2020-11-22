@@ -16,6 +16,7 @@
     "@typescript-eslint/eslint-plugin": "^4.5.0",
     "@typescript-eslint/parser": "^4.5.0",
     "antd": "^4.8.5",
+    "axios": "^0.21.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.0",
     "babel-loader": "8.1.0",
@@ -75,8 +76,9 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "init": "node scripts/init.js",
+    "start": "npm run init && node scripts/start.js",
+    "build": "npm run init && node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
