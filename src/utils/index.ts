@@ -1,30 +1,31 @@
-import { message } from "antd";
-import axios from "axios";
+import { message } from 'antd'
+import axios from 'axios'
 
-const instance = axios.create();
+const instance = axios.create()
 
 instance.interceptors.response.use(
-  function (response) {
-    if (response.data.code !== 200) {
-      message.error(response.data.msg);
-      return Promise.reject();
-    }
+	function (response) {
+		if (response.data.code !== 200) {
+			message.error(response.data.msg)
+			return Promise.reject()
+		}
 
-    if (response.data.data) {
-      return response.data;
-    }
+		if (response.data.data) {
+			return response.data
+		}
 
-    return response;
-  },
-  function (error) {
-    return Promise.reject(error);
-  }
-);
+		return response
+	},
+	function (error) {
+		return Promise.reject(error)
+	}
+)
 
 export const get = <T>(url: string, params: any = {}) =>
-  instance.get<T>(url, { params });
+	instance.get<T>(url, { params })
 
 export const api = {
-  createProject: "/createProject",
-  getAllConfig: "/getMockConfig",
-};
+	getAllConfig: '/getMockConfig',
+	createProject: '/createProject',
+	deleteProject: '/deleteProject',
+}
