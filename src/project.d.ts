@@ -1,4 +1,3 @@
 declare type Config = {
-	projectName: string
-	baseUrl: string
-}
+  projectName: string;
+};
