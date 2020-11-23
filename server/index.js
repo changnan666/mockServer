@@ -1,5 +1,6 @@
 const { writeFile } = require("fs/promises");
 const path = require("path");
+const { v1 } = require("uuid");
 
 const filePath = path.resolve(__dirname, "../mock.js");
 const mockConfig = [...require(filePath)];
@@ -23,7 +24,7 @@ const route = {
       return send({ code: 201, msg: "项目已存在" });
     }
 
-    mockConfig.push(project);
+    mockConfig.push({ projectName: project.projectName, id: v1() });
     await writeFile(filePath, `module.exports = ${JSON.stringify(mockConfig)}`);
 
     send();
