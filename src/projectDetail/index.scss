@@ -1,0 +1,40 @@
+.body {
+  display: flex;
+  height: calc(90vh - 156px);
+
+  :global {
+    .left {
+      flex: 0.5;
+
+      .base {
+        margin-bottom: 30px;
+
+        .label,
+        .value {
+          display: inline-block;
+          box-sizing: border-box;
+          height: 30px;
+          padding: 4px 10px;
+        }
+
+        .label {
+          border: 1px solid blue;
+          background-color: blue;
+          color: #fff;
+          border-radius: 4px 0 0 4px;
+        }
+
+        .value {
+          border: 1px solid #ddd;
+          border-radius: 0 4px 4px 0;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .editor {
+      flex: 0.5;
+      height: 100%;
+    }
+  }
+}

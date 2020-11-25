@@ -2,13 +2,21 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mock Server</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Monaco Editor</title>
+  <link data-name="vs/editor/editor.main" rel="stylesheet" href="monaco-editor/min/vs/editor/editor.main.css">
 </head>
 
 <body>
   <div id="root"></div>
+
+  <script>
+    var require = { paths: { vs: "monaco-editor/min/vs" } };
+  </script>
+  <script src="monaco-editor/min/vs/loader.js"></script>
+  <script src="monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+  <script src="monaco-editor/min/vs/editor/editor.main.js"></script>
 </body>
 
 </html>
