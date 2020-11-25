@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { get, api } from "../utils";
 import Editor from "./editor";
 import styles from "./index.scss";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -60,17 +61,23 @@ const App = ({ hash }: IProps) => {
       </div>
       <div className={styles.body}>
         <div className="left">
-          <div className="base">
-            <span className="label">基地址</span>
-            <span className="value">
-              {/* eslint-disable-next-line no-restricted-globals */}
-              <Paragraph copyable>{location.href}</Paragraph>
-            </span>
-          </div>
+         
           <div className="path-list">
             {pathList.map((item, i) => (
-              <div key={i}>
-                {item.path} - {item.description}
+              <div key={i} className="path-list-item">
+                <span className="path">{item.path}</span>
+                <span className="description">{item.description}</span>
+                <span className="controller">
+                  <DeleteOutlined />
+                  <EditOutlined />
+                  <Paragraph
+                    copyable={{
+                      // eslint-disable-next-line no-restricted-globals
+                      text: location.href + item.path,
+                      tooltips: false,
+                    }}
+                  />
+                </span>
               </div>
             ))}
           </div>

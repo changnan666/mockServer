@@ -17,7 +17,7 @@ const App = ({ value, onChange }: IProps) => {
       // @ts-ignore
       editor = monaco.editor.create(editorRef.current!, {
         value: "",
-        fontSize: 16,
+        fontSize: 14,
         tabSize: 2,
         theme: "vs-dark",
         language: "json",
@@ -28,6 +28,12 @@ const App = ({ value, onChange }: IProps) => {
         onChange(v);
       });
     }
+
+    return () => {
+      // @ts-ignore
+      editor.dispose();
+      editor = null;
+    };
   }, [value, onChange]);
 
   useEffect(() => {

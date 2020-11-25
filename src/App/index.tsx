@@ -7,7 +7,7 @@ import { FormInstance } from "antd/lib/form";
 import { DeleteOutlined } from "@ant-design/icons";
 import Project from "../projectDetail";
 
-const { Text, Title } = Typography;
+const { Text, Title, Paragraph } = Typography;
 
 const App = () => {
   // eslint-disable-next-line no-restricted-globals
@@ -95,7 +95,7 @@ const App = () => {
 
   const toHome = () => {
     // eslint-disable-next-line no-restricted-globals
-    history.back()
+    history.back();
   };
 
   return (
@@ -104,6 +104,18 @@ const App = () => {
         <span onClick={toHome}>Mock Server</span> {hash !== "" ? "-" : ""}{" "}
         {projectName.projectName}
       </Title>
+      {hash !== "" && (
+        <div className="base">
+          <span className="label">基地址</span>
+          <span className="value">
+            <Paragraph copyable={{ tooltips: false }}>
+              {/* eslint-disable-next-line no-restricted-globals */}
+              {location.href}
+            </Paragraph>
+          </span>
+        </div>
+      )}
+
       {hash !== "" ? (
         <Project hash={hash} />
       ) : (

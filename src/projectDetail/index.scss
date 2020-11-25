@@ -3,31 +3,60 @@
   height: calc(90vh - 156px);
 
   :global {
+    div.ant-typography,
+    .ant-typography p {
+      margin: 0;
+    }
+
     .left {
       flex: 0.5;
+      overflow: auto;
 
-      .base {
-        margin-bottom: 30px;
+     
 
-        .label,
-        .value {
-          display: inline-block;
-          box-sizing: border-box;
-          height: 30px;
-          padding: 4px 10px;
-        }
+      .path-list {
+        &-item {
+          display: flex;
+          margin-bottom: 20px;
 
-        .label {
-          border: 1px solid blue;
-          background-color: blue;
-          color: #fff;
-          border-radius: 4px 0 0 4px;
-        }
+          &:hover {
+            .path,
+            .description {
+              border-color: blue;
+            }
+          }
 
-        .value {
-          border: 1px solid #ddd;
-          border-radius: 0 4px 4px 0;
-          text-decoration: underline;
+          .path,
+          .description,
+          .controller {
+            display: inline-block;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+          }
+
+          .path {
+            flex: 0.2;
+            border-right: none;
+            cursor: pointer;
+          }
+
+          .description {
+            flex: 0.6;
+            cursor: pointer;
+          }
+
+          .controller {
+            flex: 0.2;
+            display: flex;
+            align-items: center;
+            border: none;
+
+            span {
+              cursor: pointer;
+              color: blue;
+              margin-right: 20px;
+            }
+          }
         }
       }
     }
