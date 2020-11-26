@@ -29,6 +29,9 @@ const App = ({ hash }: IProps) => {
   const onSubmit = (values: any) => {
     if (values.path.trim() === "") return;
 
+    values.code = "";
+    if (!values.description) values.description = "";
+
     get(api.createPath, { id: hash, path: values }).then((res) => {
       pathList.push({
         code: "",
@@ -45,6 +48,15 @@ const App = ({ hash }: IProps) => {
       const index = pathList.findIndex((item) => item.path === path);
       pathList.splice(index, 1);
       setPathList([...pathList]);
+    });
+  };
+
+  const onEditPath = (path: string) => {
+    setVisible(true);
+    setCurrEditPath(path);
+    setTimeout(() => {
+      const values = pathList.find((item) => item.path === path);
+      formRef.current?.setFieldsValue(values);
     });
   };
 
@@ -68,17 +80,7 @@ const App = ({ hash }: IProps) => {
     };
 
     editorRef.current.setValue(code);
-  }, [editorRef, currPath]);
-
-  useEffect(() => {
-    if (!visible && currEditPath !== "") {
-      setVisible(true);
-      setTimeout(() => {
-        const values = pathList.find((item) => item.path === currEditPath);
-        formRef.current?.setFieldsValue(values);
-      });
-    }
-  }, [currEditPath]);
+  }, [editorRef, currPath, pathList]);
 
   return (
     <>
@@ -108,7 +110,7 @@ const App = ({ hash }: IProps) => {
                 </span>
                 <span className="controller">
                   <DeleteOutlined onClick={() => onDelete(item.path)} />
-                  <EditOutlined onClick={() => setCurrEditPath(item.path)} />
+                  <EditOutlined onClick={() => onEditPath(item.path)} />
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
