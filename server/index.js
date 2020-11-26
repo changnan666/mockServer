@@ -46,7 +46,8 @@ const route = {
     send();
   },
   "/editPath": async (send, { path, hash, values }) => {
-    const i = mockConfig.findIndex((item) => item.id === hash);
+    const i = dataSourceIndex(hash);
+
     const list = mockConfig[i].paths.map(JSON.parse);
     const index = list.findIndex((item) => item.path === path);
 
@@ -56,7 +57,7 @@ const route = {
     send();
   },
   "/deletePath": async (send, { path, hash }) => {
-    const i = mockConfig.findIndex((item) => item.id === hash);
+    const i = dataSourceIndex(hash);
     const list = mockConfig[i].paths.map(JSON.parse);
     const index = list.findIndex((item) => item.path === path);
 
