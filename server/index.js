@@ -15,8 +15,12 @@ const projectNameIsExists = (name) => {
   return false;
 };
 
-const updateMockFile = () =>
-  writeFile(filePath, `module.exports = ${JSON.stringify(mockConfig)}`);
+const updateMockFile = function () {
+  return writeFile(
+    filePath,
+    `module.exports = ${JSON.stringify(mockConfig.length ? mockConfig : "[]")}`
+  );
+};
 
 const dataSourceIndex = (id) => mockConfig.findIndex((item) => item.id === id);
 
@@ -39,8 +43,8 @@ const route = {
     const index = dataSourceIndex(params.id);
 
     mockConfig.splice(index, 1);
-    await updateMockFile();
 
+    await updateMockFile();
     send();
   },
   "/getPath": (send, { id }) => {
@@ -51,8 +55,8 @@ const route = {
     const index = dataSourceIndex(id);
 
     mockConfig[index].paths.push(path);
-    await updateMockFile();
 
+    await updateMockFile();
     send();
   },
   "/editPath": async (send, { path, hash, values }) => {
@@ -63,7 +67,6 @@ const route = {
     mockConfig[i].paths[index] = values;
 
     await updateMockFile();
-
     send();
   },
   "/deletePath": async (send, { path, hash }) => {
@@ -75,7 +78,6 @@ const route = {
     mockConfig[i].paths = list.map(JSON.stringify);
 
     await updateMockFile();
-
     send();
   },
 };
@@ -90,12 +92,42 @@ const sendAdapter = (res) => {
   };
 };
 
-module.exports = (app) => {
+const reg = /\/[\s\S]{36}\/[\s\S]*/g;
+const sendData = (req, res, next) => {
+  const url = decodeURIComponent(req.url);
+
+  if (reg.test(url)) {
+    const paths = url.match(reg)[0].slice(1);
+    const index = paths.indexOf("/");
+    const endIndex = paths.indexOf("?");
+
+    const id = paths.slice(0, index);
+    const path = paths.slice(index, endIndex);
+
+    mockConfig.forEach((item) => {
+      if (item.id === id) {
+        item.paths.map(JSON.parse).forEach((p) => {
+          if (p.path === path) {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Content-Type", "application/json");
+            res.send(p.code);
+          }
+        });
+      }
+    });
+  } else {
+    next();
+  }
+};
+
+module.exports = function (app) {
+  app.use(sendData);
+
   for (const path in route) {
     app.get(path, (req, res) => {
       res.type("application/json");
       const send = sendAdapter(res);
-      route[path](send, req.query);
+      route[path].call(this, send, req.query);
     });
   }
 };

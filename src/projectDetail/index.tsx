@@ -13,8 +13,6 @@ type IProps = {
   hash: string;
 };
 
-// 保存切换接口之前的老接口，避免在每次切换时调接口
-let oldCurrPath = "-1";
 const App = ({ hash }: IProps) => {
   const [pathList, setPathList] = useState<Path[]>([]);
   const [visible, setVisible] = useState(false);
@@ -61,7 +59,6 @@ const App = ({ hash }: IProps) => {
           setPathList([...pathList]);
           setVisible(false);
           setCurrPath(currEditPath);
-          oldCurrPath = "-1";
         }
       });
     }
@@ -150,7 +147,7 @@ const App = ({ hash }: IProps) => {
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
-                      text: location.href + item.path,
+                      text: location.href.replace("#", "") + item.path,
                       tooltips: false,
                     }}
                   />

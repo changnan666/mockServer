@@ -110,7 +110,7 @@ const App = () => {
           <span className="value">
             <Paragraph copyable={{ tooltips: false }}>
               {/* eslint-disable-next-line no-restricted-globals */}
-              {location.href}
+              {location.href.replace("#", "")}
             </Paragraph>
           </span>
         </div>
