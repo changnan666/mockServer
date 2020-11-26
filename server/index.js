@@ -5,16 +5,6 @@ const { v1 } = require("uuid");
 const filePath = path.resolve(__dirname, "../mock.js");
 const mockConfig = [...require(filePath)];
 
-const projectNameIsExists = (name) => {
-  for (const iterator of mockConfig) {
-    if (iterator === name) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
 const updateMockFile = function () {
   return writeFile(
     filePath,
@@ -29,10 +19,6 @@ const route = {
     send({ data: mockConfig });
   },
   "/createProject": async (send, project) => {
-    if (projectNameIsExists(project.projectName)) {
-      return send({ code: 201, msg: "项目已存在" });
-    }
-
     const id = v1();
     mockConfig.push({ projectName: project.projectName, id, paths: [] });
 
