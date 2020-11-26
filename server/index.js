@@ -1,4 +1,4 @@
-const { readFile, writeFile } = require("fs/promises");
+const { writeFile } = require("fs/promises");
 const path = require("path");
 const { v1 } = require("uuid");
 
@@ -55,7 +55,17 @@ const route = {
 
     send();
   },
-  "/editPath": () => {},
+  "/editPath": async (send, { path, hash, values }) => {
+    const i = mockConfig.findIndex((item) => item.id === hash);
+    const list = mockConfig[i].paths.map(JSON.parse);
+    const index = list.findIndex((item) => item.path === path);
+
+    mockConfig[i].paths[index] = values;
+
+    await updateMockFile();
+
+    send();
+  },
   "/deletePath": async (send, { path, hash }) => {
     const i = mockConfig.findIndex((item) => item.id === hash);
     const list = mockConfig[i].paths.map(JSON.parse);

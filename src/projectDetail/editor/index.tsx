@@ -1,35 +1,19 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { useEffect, useRef } from "react";
 
 type IProps = {
+  value: string;
   onChange: (v: string) => void;
 };
 
 // @ts-ignore
 let editor: any;
-export default forwardRef(({ onChange }: IProps, ref) => {
+const App = ({ onChange, value }: IProps) => {
   const editorRef = useRef<HTMLDivElement | null>(null);
-
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        setValue: (v: string) => {
-          editor.setValue(v || "");
-        },
-      };
-    },
-    []
-  );
 
   useEffect(() => {
     // @ts-ignore
     editor = monaco.editor.create(editorRef.current!, {
-      value: "",
+      value,
       fontSize: 14,
       tabSize: 2,
       theme: "vs-dark",
@@ -46,7 +30,7 @@ export default forwardRef(({ onChange }: IProps, ref) => {
       editor.dispose();
       editor = null;
     };
-  }, [onChange]);
+  }, [onChange, value]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -57,4 +41,6 @@ export default forwardRef(({ onChange }: IProps, ref) => {
   }, []);
 
   return <div className="editor" ref={editorRef} />;
-});
+};
+
+export default App;

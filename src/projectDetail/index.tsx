@@ -5,6 +5,7 @@ import { get, api } from "../utils";
 import Editor from "./editor";
 import styles from "./index.scss";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { debounce } from "lodash";
 
 const { Paragraph } = Typography;
 
@@ -12,15 +13,19 @@ type IProps = {
   hash: string;
 };
 
+// 保存切换接口之前的老接口，避免在每次切换时调接口
+let oldCurrPath = "-1";
 const App = ({ hash }: IProps) => {
   const [pathList, setPathList] = useState<Path[]>([]);
   const [visible, setVisible] = useState(false);
+  /** 当前选中的接口 */
   const [currPath, setCurrPath] = useState("");
+  /** 正在编辑的接口 */
   const [currEditPath, setCurrEditPath] = useState("");
+  const [code, setCode] = useState("");
 
   const formRef = useRef<FormInstance | null>(null);
   const inputRef = useRef<Input | null>(null);
-  const editorRef = useRef<any>(null);
 
   const onAddInterface = () => {
     setVisible(true);
@@ -29,18 +34,37 @@ const App = ({ hash }: IProps) => {
   const onSubmit = (values: any) => {
     if (values.path.trim() === "") return;
 
-    values.code = "";
-    if (!values.description) values.description = "";
+    if (currEditPath === "") {
+      values.code = "";
+      if (!values.description) values.description = "";
 
-    get(api.createPath, { id: hash, path: values }).then((res) => {
-      pathList.push({
-        code: "",
-        ...values,
+      get(api.createPath, { id: hash, path: values }).then(() => {
+        pathList.push({
+          code: "",
+          ...values,
+        });
+
+        setPathList([...pathList]);
+        setVisible(false);
+        setCurrPath(values.path);
       });
+    } else {
+      get(api.editPath, {
+        hash,
+        path: currEditPath,
+        values,
+      }).then(() => {
+        const i = pathList.findIndex((item) => item.path === currEditPath);
 
-      setPathList([...pathList]);
-      setVisible(false);
-    });
+        if (i !== -1) {
+          pathList[i] = values;
+          setPathList([...pathList]);
+          setVisible(false);
+          setCurrPath(currEditPath);
+          oldCurrPath = "-1";
+        }
+      });
+    }
   };
 
   const onDelete = (path: string) => {
@@ -51,13 +75,36 @@ const App = ({ hash }: IProps) => {
     });
   };
 
-  const onEditPath = (path: string) => {
+  const onEditPath = ({ path, code }: Path) => {
     setVisible(true);
     setCurrEditPath(path);
+    setCode(code);
+
     setTimeout(() => {
       const values = pathList.find((item) => item.path === path);
       formRef.current?.setFieldsValue(values);
     });
+  };
+
+  const onChange = debounce((v: string) => {
+    if (currPath !== "" && v !== "") {
+      const target = pathList.find((item) => item.path === currPath);
+
+      if (target) {
+        target.code = v;
+
+        get(api.editPath, {
+          hash,
+          path: currPath,
+          values: target,
+        });
+      }
+    }
+  }, 300);
+
+  const onSelect = (item: Path) => {
+    setCurrPath(item.path);
+    setCode(item.code);
   };
 
   useEffect(() => {
@@ -73,14 +120,6 @@ const App = ({ hash }: IProps) => {
       }
     });
   }, [inputRef, visible]);
-
-  useEffect(() => {
-    const { code } = pathList.find((item) => item.path === currPath) || {
-      code: "",
-    };
-
-    editorRef.current.setValue(code);
-  }, [editorRef, currPath, pathList]);
 
   return (
     <>
@@ -99,18 +138,15 @@ const App = ({ hash }: IProps) => {
                   item.path === currPath ? "active" : ""
                 }`}
               >
-                <span className="path" onClick={() => setCurrPath(item.path)}>
+                <span className="path" onClick={() => onSelect(item)}>
                   {item.path}
                 </span>
-                <span
-                  className="description"
-                  onClick={() => setCurrPath(item.path)}
-                >
+                <span className="description" onClick={() => onSelect(item)}>
                   {item.description}
                 </span>
                 <span className="controller">
                   <DeleteOutlined onClick={() => onDelete(item.path)} />
-                  <EditOutlined onClick={() => onEditPath(item.path)} />
+                  <EditOutlined onClick={() => onEditPath(item)} />
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
@@ -124,9 +160,9 @@ const App = ({ hash }: IProps) => {
           </div>
         </div>
         <Editor
-          ref={editorRef}
+          value={code}
           onChange={(v) => {
-            console.log(v);
+            onChange(v);
           }}
         />
       </div>
