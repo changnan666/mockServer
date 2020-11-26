@@ -55,8 +55,18 @@ const route = {
 
     send();
   },
-  "/deletePath": () => {
-    console.log("删除地址");
+  "/editPath": () => {},
+  "/deletePath": async (send, { path, hash }) => {
+    const i = mockConfig.findIndex((item) => item.id === hash);
+    const list = mockConfig[i].paths.map(JSON.parse);
+    const index = list.findIndex((item) => item.path === path);
+
+    list.splice(index, 1);
+    mockConfig[i].paths = list.map(JSON.stringify);
+
+    await updateMockFile();
+
+    send();
   },
 };
 

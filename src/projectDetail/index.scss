@@ -12,14 +12,19 @@
       flex: 0.5;
       overflow: auto;
 
-     
-
       .path-list {
         &-item {
           display: flex;
           margin-bottom: 20px;
 
           &:hover {
+            .path,
+            .description {
+              border-color: #0000ff4f;
+            }
+          }
+
+          &.active {
             .path,
             .description {
               border-color: blue;

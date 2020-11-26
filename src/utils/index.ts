@@ -30,4 +30,6 @@ export const api = {
   deleteProject: "/deleteProject",
   getPath: "/getPath",
   createPath: "/createPath",
+  deletePath: "/deletePath",
+  editPath: "/editPath",
 };

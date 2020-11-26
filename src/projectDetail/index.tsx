@@ -15,18 +15,20 @@ type IProps = {
 const App = ({ hash }: IProps) => {
   const [pathList, setPathList] = useState<Path[]>([]);
   const [visible, setVisible] = useState(false);
+  const [currPath, setCurrPath] = useState("");
+  const [currEditPath, setCurrEditPath] = useState("");
 
   const formRef = useRef<FormInstance | null>(null);
   const inputRef = useRef<Input | null>(null);
+  const editorRef = useRef<any>(null);
 
   const onAddInterface = () => {
     setVisible(true);
   };
 
   const onSubmit = (values: any) => {
-    if (values.path.trim() === "") {
-      return;
-    }
+    if (values.path.trim() === "") return;
+
     get(api.createPath, { id: hash, path: values }).then((res) => {
       pathList.push({
         code: "",
@@ -35,6 +37,14 @@ const App = ({ hash }: IProps) => {
 
       setPathList([...pathList]);
       setVisible(false);
+    });
+  };
+
+  const onDelete = (path: string) => {
+    get(api.deletePath, { path, hash }).then(() => {
+      const index = pathList.findIndex((item) => item.path === path);
+      pathList.splice(index, 1);
+      setPathList([...pathList]);
     });
   };
 
@@ -52,6 +62,24 @@ const App = ({ hash }: IProps) => {
     });
   }, [inputRef, visible]);
 
+  useEffect(() => {
+    const { code } = pathList.find((item) => item.path === currPath) || {
+      code: "",
+    };
+
+    editorRef.current.setValue(code);
+  }, [editorRef, currPath]);
+
+  useEffect(() => {
+    if (!visible && currEditPath !== "") {
+      setVisible(true);
+      setTimeout(() => {
+        const values = pathList.find((item) => item.path === currEditPath);
+        formRef.current?.setFieldsValue(values);
+      });
+    }
+  }, [currEditPath]);
+
   return (
     <>
       <div className="head">
@@ -61,15 +89,26 @@ const App = ({ hash }: IProps) => {
       </div>
       <div className={styles.body}>
         <div className="left">
-         
           <div className="path-list">
             {pathList.map((item, i) => (
-              <div key={i} className="path-list-item">
-                <span className="path">{item.path}</span>
-                <span className="description">{item.description}</span>
+              <div
+                key={i}
+                className={`path-list-item ${
+                  item.path === currPath ? "active" : ""
+                }`}
+              >
+                <span className="path" onClick={() => setCurrPath(item.path)}>
+                  {item.path}
+                </span>
+                <span
+                  className="description"
+                  onClick={() => setCurrPath(item.path)}
+                >
+                  {item.description}
+                </span>
                 <span className="controller">
-                  <DeleteOutlined />
-                  <EditOutlined />
+                  <DeleteOutlined onClick={() => onDelete(item.path)} />
+                  <EditOutlined onClick={() => setCurrEditPath(item.path)} />
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
@@ -83,20 +122,21 @@ const App = ({ hash }: IProps) => {
           </div>
         </div>
         <Editor
-          value=""
+          ref={editorRef}
           onChange={(v) => {
             console.log(v);
           }}
         />
       </div>
       <Modal
-        title="添加接口"
+        title={currEditPath === "" ? "添加接口" : "编辑接口"}
         centered
         visible={visible}
         onCancel={() => setVisible(false)}
         footer={false}
         afterClose={() => {
           formRef.current?.resetFields();
+          setCurrEditPath("");
         }}
       >
         <Form

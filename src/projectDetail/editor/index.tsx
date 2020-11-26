@@ -1,40 +1,52 @@
-import React, { useEffect, useRef } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from "react";
 
 type IProps = {
-  value: string;
   onChange: (v: string) => void;
 };
 
 // @ts-ignore
 let editor: any;
-const App = ({ value, onChange }: IProps) => {
+export default forwardRef(({ onChange }: IProps, ref) => {
   const editorRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (editor) {
-      editor.setValue(value);
-    } else {
-      // @ts-ignore
-      editor = monaco.editor.create(editorRef.current!, {
-        value: "",
-        fontSize: 14,
-        tabSize: 2,
-        theme: "vs-dark",
-        language: "json",
-      });
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        setValue: (v: string) => {
+          editor.setValue(v || "");
+        },
+      };
+    },
+    []
+  );
 
-      editor.onDidChangeModelContent(() => {
-        const v = editor.getValue();
-        onChange(v);
-      });
-    }
+  useEffect(() => {
+    // @ts-ignore
+    editor = monaco.editor.create(editorRef.current!, {
+      value: "",
+      fontSize: 14,
+      tabSize: 2,
+      theme: "vs-dark",
+      language: "json",
+    });
+
+    editor.onDidChangeModelContent(() => {
+      const v = editor.getValue();
+      onChange(v);
+    });
 
     return () => {
       // @ts-ignore
       editor.dispose();
       editor = null;
     };
-  }, [value, onChange]);
+  }, [onChange]);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -45,6 +57,4 @@ const App = ({ value, onChange }: IProps) => {
   }, []);
 
   return <div className="editor" ref={editorRef} />;
-};
-
-export default App;
+});
