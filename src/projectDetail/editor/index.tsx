@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+// import { FullscreenOutlined } from "@ant-design/icons";
 
 type IProps = {
   value: string;
@@ -16,7 +17,7 @@ const App = ({ onChange, value }: IProps) => {
       value,
       fontSize: 14,
       tabSize: 2,
-      theme: "vs-dark",
+      theme: "vs-ligh",
       language: "json",
     });
 
@@ -40,7 +41,14 @@ const App = ({ onChange, value }: IProps) => {
     });
   }, []);
 
-  return <div className="editor" ref={editorRef} />;
+  return (
+    <div className="editor">
+      <div className="navbar">
+        {/* <FullscreenOutlined /> */}
+      </div>
+      <div className="editor-container" ref={editorRef} />
+    </div>
+  );
 };
 
 export default App;

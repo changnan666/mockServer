@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { get, api } from "../utils";
 import Editor from "./editor";
 import styles from "./index.scss";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, ApiOutlined } from "@ant-design/icons";
 import { debounce } from "lodash";
 
 const { Paragraph } = Typography;
@@ -144,6 +144,8 @@ const App = ({ hash }: IProps) => {
                 <span className="controller">
                   <DeleteOutlined onClick={() => onDelete(item.path)} />
                   <EditOutlined onClick={() => onEditPath(item)} />
+                  {/* eslint-disable-next-line no-restricted-globals */}
+                  <ApiOutlined onClick={() => window.open(location.href.replace("#", "") + item.path, '_blank')} />
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
