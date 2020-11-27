@@ -89,7 +89,7 @@ const sendData = (req, res, next) => {
     const endIndex = paths.indexOf("?");
 
     const id = paths.slice(0, index);
-    const path = paths.slice(index, endIndex);
+    const path = paths.slice(index, endIndex === -1 ? paths.length : endIndex);
 
     mockConfig.forEach((item) => {
       if (item.id === id) {
