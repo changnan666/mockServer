@@ -63,12 +63,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    get<Config[]>(api.getAllConfig).then((res) => {
-      setConfig(res.data);
-    });
+    if (hash === "") {
+      get<Config[]>(api.getAllConfig).then((res) => {
+        setConfig(res.data);
+      });
+    }
 
     window.addEventListener("hashchange", onHashchange);
-  }, []);
+    return () => {
+      window.removeEventListener("hashchange", onHashchange);
+    };
+  }, [hash]);
 
   useEffect(() => {
     setTimeout(() => {

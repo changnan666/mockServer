@@ -107,6 +107,11 @@ const App = ({ hash }: IProps) => {
   useEffect(() => {
     get<Path[]>(api.getPath, { id: hash }).then((res) => {
       setPathList(res.data);
+
+      if (res.data.length) {
+        setCurrPath(res.data[0].path);
+        setCode(res.data[0].code);
+      }
     });
   }, [hash]);
 
@@ -145,7 +150,15 @@ const App = ({ hash }: IProps) => {
                   <DeleteOutlined onClick={() => onDelete(item.path)} />
                   <EditOutlined onClick={() => onEditPath(item)} />
                   {/* eslint-disable-next-line no-restricted-globals */}
-                  <ApiOutlined onClick={() => window.open(location.href.replace("#", "") + item.path, '_blank')} />
+                  <ApiOutlined
+                    onClick={() =>
+                      window.open(
+                        // eslint-disable-next-line no-restricted-globals
+                        location.href.replace("#", "") + item.path,
+                        "_blank"
+                      )
+                    }
+                  />
                   <Paragraph
                     copyable={{
                       // eslint-disable-next-line no-restricted-globals
