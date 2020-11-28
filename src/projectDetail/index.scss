@@ -89,11 +89,13 @@
           rgb(197, 197, 197)
         );
         padding-left: 10px;
+        padding-right: 10px;
         display: flex;
         align-items: center;
+        justify-content: flex-end;
 
-        span {
-          cursor: pointer;
+        .language {
+          font-size: 12px;
         }
       }
 
