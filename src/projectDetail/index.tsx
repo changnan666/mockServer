@@ -36,6 +36,12 @@ const App = ({ hash }: IProps) => {
       values.code = "";
       if (!values.description) values.description = "";
 
+      // TODO: 支持路径参数
+      const i = values.path.indexOf("?");
+      if (i !== -1) {
+        values.path = values.path.slice(0, i);
+      }
+
       get(api.createPath, { id: hash, path: values }).then(() => {
         pathList.push({
           code: "",
